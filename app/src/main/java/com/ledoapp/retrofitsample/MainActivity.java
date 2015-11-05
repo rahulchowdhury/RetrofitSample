@@ -5,6 +5,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.ledoapp.retrofitsample.model.Weather;
+
+import java.util.List;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -16,12 +20,16 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GithubClient githubClient = ServiceGenerator.createService(GithubClient.class);
+        WeatherClient weatherClient = ServiceGenerator.createService(WeatherClient.class);
 
-        githubClient.fetchFromGitHub("rahulchowdhury", new Callback<GitHub>() {
+        weatherClient.fetchFromGitHub("Kolkata", "2de143494c0b295cca9337e1e96b00e0", new Callback<ResponseJSON>() {
             @Override
-            public void success(GitHub gitHub, Response response) {
-                System.out.println("Name: " + gitHub.getName() + " Email: " + gitHub.getEmail());
+            public void success(ResponseJSON responseJSON, Response response) {
+                System.out.println("Temp: " + responseJSON.getMain().getTemp() + " Pressure: " + responseJSON.getMain().getPressure());
+                List<Weather> weather = responseJSON.getWeather();
+                for (Weather w : weather) {
+                    System.out.println("Current Weather: " + w.getMain() + " Description: " + w.getDescription());
+                }
             }
 
             @Override
